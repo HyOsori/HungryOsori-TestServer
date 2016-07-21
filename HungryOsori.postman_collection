@@ -1,0 +1,158 @@
+{
+	"variables": [],
+	"info": {
+		"name": "HungryOsori",
+		"_postman_id": "8df19460-b4b6-8aab-33f5-e9c78c0c4221",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "req_login",
+			"request": {
+				"url": "http://localhost:8000/req_login",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "kanak",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "user_key",
+							"value": "nu8qdEnCTDC96hLbmwhodg",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "req_subscription_list",
+			"request": {
+				"url": "http://localhost:8000/req_subscription_list",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "kanak",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "user_key",
+							"value": "nu8qdEnCTDC96hLbmwhodg",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "req_entire_list",
+			"request": {
+				"url": "http://localhost:8000/req_entire_list",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "kanak",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "user_key",
+							"value": "nu8qdEnCTDC96hLbmwhodg",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "req_subscribe_crawler",
+			"request": {
+				"url": "http://localhost:8000/req_subscribe_crawler",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "kanak",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "user_key",
+							"value": "nu8qdEnCTDC96hLbmwhodg",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "crawler_id",
+							"value": "wf42i",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "req_unsubscribe_crawler",
+			"request": {
+				"url": "http://localhost:8000/req_unsubscribe_crawler",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "kanak",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "user_key",
+							"value": "nu8qdEnCTDC96hLbmwhodg",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "crawler_id",
+							"value": "wf42i",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
