@@ -17,6 +17,7 @@ python ./HungryOsori-TestServer/app.py
 |user_id|사용자 아이디|
 |user_key|서버에서 발급하는 키, user_key없이 request를 날리면, 서버에서 key를 발급한다.|
 |user_pw|사용 안함|
+|token|Push Token(FCM Device ID), 없을 경우 key를 아예 안 넣어주면 된다.|
 
 - Response
 ```JSON
@@ -99,6 +100,40 @@ python ./HungryOsori-TestServer/app.py
 |user_id|사용자 아이디|
 |user_key|서버에서 발급받은 키, user_key없이 request를 날리면 <B>에러</B>가 발생한다.|
 |crawler_id|구독하고있는 크롤러 id|
+
+- Response
+```JSON
+{
+  "message": "Success",
+  "error": 0
+}
+```
+
+###  6. Register Push Token
+- /register_push_token
+
+|Data|Description|
+|----|-----------|
+|user_id|사용자 아이디|
+|user_key|서버에서 발급받은 키, user_key없이 request를 날리면 <B>에러</B>가 발생한다.|
+|token|firebase cloud message token|
+
+- Response
+```JSON
+{
+  "message": "Success",
+  "error": 0
+}
+```
+
+###  6. Request Push
+- /req_push
+웹에서 요청하면 Push 토큰(FCM Device ID)를 등록한 사용자에게 Push 메시지를 보낸다.
+
+|Data|Description|
+|----|-----------|
+|title|Push 타이틀|
+|message|Push 메시지|
 
 - Response
 ```JSON

@@ -153,6 +153,66 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "req_register_apple_push_token",
+			"request": {
+				"url": "http://localhost:8000/req_register_apple_push_token",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "kanak",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "user_key",
+							"value": "nu8qdEnCTDC96hLbmwhodg",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "push_token",
+							"value": "1234",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "req_push",
+			"request": {
+				"url": "http://localhost:8000/req_push",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "message",
+							"value": "하하하하 라임 지리구연~ 허구연~",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "title",
+							"value": "민섭 와썹",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }

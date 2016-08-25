@@ -2,19 +2,26 @@
 
 from flask import Flask, session, request
 import json, uuid, base64
+from pyfcm import FCMNotification
 
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
+push_service = FCMNotification(api_key="AIzaSyBEVkJRz7HazHJq_u8NmQP5ZLJikf1lEbM")
+
+
+class User(object):
+    pass
+
+
 users = {
-    "user1": [],
 }
 
 crawlers = {
     "sdhfi3": {
         "crawler_id": "sdhfi3",
         "title": "한양대학교 컴퓨터전공 공지사항",
-        "description": "한양대 컴공 공지 알",
+        "description": "한양대 컴공 공지 알림",
         "thumbnail_url": "http://cs.hanyang.ac.kr/images/common/logo.gif",
     },
     "asfd13": {
@@ -46,7 +53,7 @@ crawlers = {
 
 @app.route("/")
 def index():
-    return "kk"
+    return "HungryOsori TestServer"
 
 
 def make_error_response(error_code, message):
@@ -94,9 +101,6 @@ def verify_user():
 
 @app.route('/req_login', methods=["POST"])
 def req_login():
-    # user_id = None
-    # user_key = None
-
     try:
         user_id = request.form['user_id']
     except Exception as e:
@@ -106,6 +110,11 @@ def req_login():
         user_key = request.form['user_key']
     except:
         user_key = refresh_user_key()
+
+    try:
+        push_token = request.form['token']
+    except Exception as e:
+        push_token = None
 
     if 'user_id' in session:
         if session['user_id'] != user_id:
@@ -121,7 +130,10 @@ def req_login():
         session['user_key'] = user_key
 
     if user_id not in users:
-        users[user_id] = []
+        users[user_id] = User()
+        users[user_id].id = user_id
+        users[user_id].subscriptions = []
+        users[user_id].token = push_token
 
     return make_success_result(user_key=user_key)
 
@@ -139,7 +151,7 @@ def req_subscription_list():
 
     try:
         if users.has_key(user_id) is True:
-            subscription_list = users[user_id]
+            subscription_list = users[user_id].subscriptions
     except:
         return make_error_response(-1, "collection error")
 
@@ -169,12 +181,12 @@ def req_subscribe_crawler():
         return make_error_response(-1, "no have crawler_id")
 
     try:
-        if crawler_id in users[user_id]:
+        if crawler_id in users[user_id].subscriptions:
             return make_error_response(-1, "already registered")
     except:
         return make_error_response(-1, "collection error")
 
-    users[user_id].append(crawler_id)
+    users[user_id].subscriptions.append(crawler_id)
 
     return make_success_result()
 
@@ -193,14 +205,54 @@ def req_unsubscribe_crawler():
         return make_error_response(-1, "no have crawler_id")
 
     try:
-        if crawler_id not in users[user_id]:
+        if crawler_id not in users[user_id].subscriptions:
             return make_error_response(-1, "not registered")
     except:
         return make_error_response(-1, "collection error")
 
-    users[user_id].remove(crawler_id)
+    users[user_id].subscriptions.remove(crawler_id)
 
     return make_success_result()
+
+
+@app.route("/register_push_token", methods=["POST"])
+def req_register_push_token():
+    user_info = verify_user()
+    if not user_info[0]:
+        return make_error_response(-1, "invalid user id-key")
+
+    try:
+        token = request.form['token']
+    except Exception as e:
+        return make_error_response(-1, "no have apple push token")
+
+    user_id = user_info[1]
+    users[user_id].token = token
+
+    return make_success_result()
+
+
+@app.route('/req_push', methods=["POST"])
+def req_push():
+    try:
+        title = request.form['title']
+        message = request.form['message']
+    except Exception as e:
+        return make_error_response(-1, "invalid data")
+
+    tokens = []
+    for user in users:
+        if hasattr(user, 'token') is True:
+            tokens.append(user.token)
+
+    try:
+        result = push_service.notify_multiple_devices(registration_ids=tokens, message_title=title, message_body=message)
+    except Exception as e:
+        print e
+
+    print result
+
+    return str(result)
 
 
 if __name__ == '__main__':
