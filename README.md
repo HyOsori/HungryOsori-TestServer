@@ -10,7 +10,7 @@ python ./HungryOsori-TestServer/app.py
 
 # API
 ### 1. Login
-- /login
+- /req_login
 
 |Data|Description|
 |----|-----------|
