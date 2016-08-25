@@ -126,7 +126,7 @@ python ./HungryOsori-TestServer/app.py
 }
 ```
 
-###  6. Request Push
+###  7. Request Push
 - /req_push
 웹에서 요청하면 Push 토큰(FCM Device ID)를 등록한 사용자에게 Push 메시지를 보낸다.
 

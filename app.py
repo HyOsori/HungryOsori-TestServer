@@ -241,7 +241,7 @@ def req_push():
         return make_error_response(-1, "invalid data")
 
     tokens = []
-    for user in users:
+    for user in users.values():
         if hasattr(user, 'token') is True:
             tokens.append(user.token)
 
