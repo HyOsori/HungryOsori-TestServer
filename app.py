@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, session, request
+from flask import Flask, session, request, url_for
 import json, uuid, base64
 from pyfcm import FCMNotification
+import re
 
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
@@ -99,12 +100,59 @@ def verify_user():
     return True, user_id, user_key
 
 
+def is_vaild_id(id):
+    if bool(re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", id)) is False:
+        return False
+
+    return True
+
+
+def make_temp_password():
+    return refresh_user_key()
+
+
+def make_token_for_reset_password():
+    return refresh_user_key()
+
+
+@app.route('/req_signup', methods=["POST"])
+def req_signup():
+    try:
+        user_id = request.form['user_id']
+        password = request.form['password']
+    except Exception as e:
+        return make_error_response(-1, "invalid form data")
+
+    if is_vaild_id(user_id) is False:
+        return make_error_response(-200, "invalid id(must email)")
+
+    if user_id not in users:
+        users[user_id] = User()
+        users[user_id].id = user_id
+        users[user_id].password = password
+        users[user_id].subscriptions = []
+        users[user_id].token = None
+    else:
+        return make_error_response(-100, "alreay exist user_id")
+
+    return make_success_result()
+
+
 @app.route('/req_login', methods=["POST"])
 def req_login():
     try:
         user_id = request.form['user_id']
+        password = request.form['password']
     except Exception as e:
-        return make_error_response(-1, "no have form data 'user_id'")
+        return make_error_response(-1, "invalid form data")
+
+    if user_id not in users:
+        return make_error_response(-100, "not exist user")
+
+    user = users[user_id]
+
+    if user.password != password:
+        return make_error_response(-200, "invalid password")
 
     try:
         user_key = request.form['user_key']
@@ -112,7 +160,7 @@ def req_login():
         user_key = refresh_user_key()
 
     try:
-        push_token = request.form['token']
+        user.token = request.form['token']
     except Exception as e:
         push_token = None
 
@@ -129,13 +177,73 @@ def req_login():
         session['user_id'] = user_id
         session['user_key'] = user_key
 
-    if user_id not in users:
-        users[user_id] = User()
-        users[user_id].id = user_id
-        users[user_id].subscriptions = []
-        users[user_id].token = push_token
+    if hasattr(user, 'reset_pw_token'):
+        del user.reset_pw_token
 
     return make_success_result(user_key=user_key)
+
+
+@app.route('/req_change_password', methods=["POST"])
+def req_change_password():
+    try:
+        user_id = request.form['user_id']
+        password = request.form['password']
+        new_password = request.form['new_password']
+    except Exception as e:
+        return make_error_response(-1, "invalid form data")
+
+    if user_id not in users:
+        return make_error_response(-100, "not exist user")
+
+    user = users[user_id]
+
+    if user.password != password:
+        return make_error_response(-200, "invalid password")
+
+    user.password = new_password
+
+    return make_success_result()
+
+
+@app.route('/req_find_password', methods=["POST"])
+def req_find_password():
+    try:
+        user_id = request.form['user_id']
+    except Exception as e:
+        return make_error_response(-1, "invalid form data")
+
+    if user_id not in users:
+        return make_error_response(-100, "not exist user")
+
+    user = users[user_id]
+
+    user.password = make_temp_password()
+    user.reset_pw_token = make_token_for_reset_password()
+
+    pw_reset_url = url_for('find_password', pw_reset_token = user.reset_pw_token)
+
+    return make_success_result(new_password=user.password, pw_reset_url=pw_reset_url)
+
+
+@app.route('/find_password/<pw_reset_token>', methods=["POST"])
+def find_password(pw_reset_token=None):
+    if pw_reset_token is None:
+        return make_error_response(-1, "invalid route")
+
+    new_password = None
+
+    for user in users.values():
+        if hasattr(user, 'reset_pw_token'):
+            if user.reset_pw_token == pw_reset_token:
+                del user.reset_pw_token
+                new_password = make_temp_password()
+                user.password = new_password
+                break
+
+    if new_password is None:
+        return make_error_response(-100, "invalid token")
+
+    return make_success_result(new_password=new_password)
 
 
 @app.route("/req_subscription_list", methods=["GET", "POST"])
@@ -246,7 +354,8 @@ def req_push():
             tokens.append(user.token)
 
     try:
-        result = push_service.notify_multiple_devices(registration_ids=tokens, message_title=title, message_body=message)
+        result = push_service.notify_multiple_devices(registration_ids=tokens, message_title=title,
+                                                      message_body=message)
     except Exception as e:
         print e
 
