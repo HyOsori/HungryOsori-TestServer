@@ -8,6 +8,33 @@
 	},
 	"item": [
 		{
+			"name": "req_signup",
+			"request": {
+				"url": "http://localhost:8000/req_signup",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "haha@haha.com",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "req_login",
 			"request": {
 				"url": "http://localhost:8000/req_login",
@@ -18,13 +45,73 @@
 					"formdata": [
 						{
 							"key": "user_id",
-							"value": "kanak",
+							"value": "haha@haha.com",
 							"type": "text",
 							"enabled": true
 						},
 						{
 							"key": "user_key",
 							"value": "nu8qdEnCTDC96hLbmwhodg",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "req_change_password",
+			"request": {
+				"url": "http://localhost:8000/req_change_password",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "haha@haha.com",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "password",
+							"value": "12345",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "new_password",
+							"value": "1234",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "req_find_password",
+			"request": {
+				"url": "http://localhost:8000/req_find_password",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "haha@haha.com",
 							"type": "text",
 							"enabled": true
 						}
@@ -198,7 +285,7 @@
 					"formdata": [
 						{
 							"key": "message",
-							"value": "하하하하 라임 지리구연~ 허구연~",
+							"value": "민섭 와썹 하하하하 라임 지리구연~ 허구연~2",
 							"type": "text",
 							"enabled": true
 						},
@@ -209,6 +296,20 @@
 							"enabled": true
 						}
 					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "find_password",
+			"request": {
+				"url": "http://localhost:8000/find_password",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
 				},
 				"description": ""
 			},
