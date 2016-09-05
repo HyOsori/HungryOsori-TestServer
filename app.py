@@ -142,7 +142,6 @@ def req_signup():
 def req_login():
     try:
         user_id = request.form['user_id']
-        password = request.form['password']
     except Exception as e:
         return make_error_response(-1, "invalid form data")
 
@@ -150,9 +149,6 @@ def req_login():
         return make_error_response(-100, "not exist user")
 
     user = users[user_id]
-
-    if user.password != password:
-        return make_error_response(-200, "invalid password")
 
     try:
         user_key = request.form['user_key']
@@ -164,18 +160,25 @@ def req_login():
     except Exception as e:
         push_token = None
 
-    if 'user_id' in session:
-        if session['user_id'] != user_id:
+    try:
+        password = request.form['password']
+
+        if user.password != password:
+            return make_error_response(-200, "invalid password")
+
+    except Exception as e:
+        if 'user_id' in session:
+            if session['user_id'] != user_id:
+                session['user_id'] = user_id
+                session['user_key'] = user_key
+            elif session['user_key'] != user_key:
+                session.pop('user_id', None)
+                session.pop('user_key', None)
+
+                return make_error_response(-1, "invalid session, retry to login")
+        else:
             session['user_id'] = user_id
             session['user_key'] = user_key
-        elif session['user_key'] != user_key:
-            session.pop('user_id', None)
-            session.pop('user_key', None)
-
-            return make_error_response(-1, "invalid session, retry to login")
-    else:
-        session['user_id'] = user_id
-        session['user_key'] = user_key
 
     if hasattr(user, 'reset_pw_token'):
         del user.reset_pw_token
