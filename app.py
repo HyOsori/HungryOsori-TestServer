@@ -92,7 +92,7 @@ def verify_user():
         return False, -1, -1, "no have form data 'user_id' or 'user_key"
 
     try:
-        if session['user_id'] != user_id or session['user_key'] != user_key:
+        if str(session['user_id']) != user_id or str(session['user_key']) != user_key:
             return False, -1, -1, "invalid session"
     except Exception as e:
         return False, -1, -1, "no have key in session"
@@ -165,6 +165,9 @@ def req_login():
 
         if user.password != password:
             return make_error_response(-200, "invalid password")
+        else:
+            session['user_id'] = user_id
+            session['user_key'] = user_key
 
     except Exception as e:
         if 'user_id' in session:
