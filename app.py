@@ -168,8 +168,8 @@ def req_login():
 
     except Exception as e:
         if 'user_id' in session:
-            if str(session['user_id']) == user_id and
-                str(session['user_key']) != user_key:
+            if str(session['user_id']) == user_id and \
+                            str(session['user_key']) != user_key:
                 return make_error_response(-1, "invalid session, retry to login")
         else:
             session['user_id'] = user_id
